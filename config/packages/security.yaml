@@ -1,0 +1,25 @@
+security:
+    providers:
+        admin_provider:
+            entity:
+                class: App:User
+    encoders:
+        App\Entity\User:
+            id: App\Security\Core\Encoder\HashEncoder
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        admin:
+            provider: admin_provider
+            anonymous: ~
+            guard:
+                authenticators:
+                    - app.admin_login_authenticator
+            logout:
+                path: /logout
+                target: /login
+            switch_user: { role: ROLE_MASTER, parameter: _impersonate }
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_ADMIN }
